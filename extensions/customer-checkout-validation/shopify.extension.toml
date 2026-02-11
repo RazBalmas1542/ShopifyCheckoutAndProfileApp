@@ -1,0 +1,36 @@
+api_version = "2025-07"
+
+[[extensions]]
+name = "t:name"
+handle = "customer-checkout-validation"
+type = "function"
+uid = "98f2ee12-6b94-6283-4a1d-f9d4df660ba5833f3457"
+description = "t:description"
+
+  [[extensions.targeting]]
+  target = "cart.validations.generate.run"
+  input_query = "src/cart_validations_generate_run.graphql"
+  export = "cart_validations_generate_run"
+
+  [extensions.build]
+  command = "cargo build --target=wasm32-unknown-unknown --release"
+  path = "target/wasm32-unknown-unknown/release/customer-checkout-validation.wasm"
+  watch = ["src/**/*.rs"]
+
+  # Metafields for configuration
+  # These can be set in the Shopify Admin under Apps > [Your App] > Extensions > [This Extension]
+  # Or via the Admin API
+  [[extensions.metafields]]
+  namespace = "$app"
+  key = "location_admins_name"
+  owner_type = "app_function"
+
+  [[extensions.metafields]]
+  namespace = "$app"
+  key = "ordering_only_name"
+  owner_type = "app_function"
+
+  [[extensions.metafields]]
+  namespace = "$app"
+  key = "error_message"
+  owner_type = "app_function"

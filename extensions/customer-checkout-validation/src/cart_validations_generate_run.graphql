@@ -1,0 +1,19 @@
+query Input {
+  cart {
+    buyerIdentity {
+      customer {
+        id
+      }
+      purchasingCompany {
+        company {
+          id
+          name
+        }
+        location {
+          id
+          name
+        }
+      }
+    }
+  }
+}
