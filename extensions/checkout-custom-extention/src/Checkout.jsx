@@ -12,8 +12,6 @@ function Extension() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [shouldRender, setShouldRender] = useState(true); // Default to showing content
-  const [isCustomerLoggedIn, setIsCustomerLoggedIn] = useState(false);
-  const [validationError, setValidationError] = useState(null);
 
   // Get the configured MetaObject type from settings
   // Settings are accessed via shopify.settings.current[fieldKey]
@@ -333,37 +331,6 @@ function Extension() {
       </s-banner>
     );
   }
-
-  // Check customer validation (login status + location) on component mount
-  useEffect(() => {
-    // Check if customer is logged in
-    // @ts-ignore - Customer structure
-    const customer = shopify.customer;
-    const isLoggedIn = !!customer;
-    
-    setIsCustomerLoggedIn(isLoggedIn);
-
-    const locationAdminsName = "Location Admins";
-
-    if (!isLoggedIn) {
-      // Customer is not logged in
-      setValidationError("You must be logged in to complete this purchase. Please sign in to continue.");
-    } else {
-      // Customer is logged in, try to read company location if available
-      // @ts-ignore - B2B customer structure
-      const purchasingCompany = customer?.purchasingCompany || customer?.company;
-      // @ts-ignore - Company location structure
-      const locationName = purchasingCompany?.location?.name || purchasingCompany?.currentLocation?.name;
-
-      if (!locationName || locationName.trim() !== locationAdminsName) {
-        // Wrong or missing location
-        setValidationError("Only customers in the 'Location Admins' location are allowed to place orders. Please contact your administrator.");
-      } else {
-        // Logged in and correct location
-        setValidationError(null);
-      }
-    }
-  }, []);
 
   // Check conditional rendering and fetch MetaObjects on component mount
   useEffect(() => {
@@ -802,13 +769,6 @@ function Extension() {
   return (
     <s-box>
       <s-stack gap="base">
-          {/* Validation Error Banner - Shows when customer is not logged in */}
-          {validationError && (
-            <s-banner tone="critical">
-              <s-text>{validationError}</s-text>
-            </s-banner>
-          )}
-          
           {/* Configurable Title */}
           {sectionTitle && (
            
