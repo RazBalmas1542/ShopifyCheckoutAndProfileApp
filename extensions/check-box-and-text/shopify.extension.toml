@@ -1,0 +1,70 @@
+# Learn more about configuring your checkout UI extension:
+# https://shopify.dev/docs/api/checkout-ui-extensions/latest/configuration
+
+# The version of APIs your extension will receive. Learn more:
+# https://shopify.dev/docs/api/usage/versioning
+api_version = "2026-01"
+
+[[extensions]]
+name = "CheckBox And Text"
+handle = "checkbox-and-text"
+type = "ui_extension"
+uid = "633a1543-2fcc-5442-6a77-9dec90c6c39664d059bc"
+
+# Controls where in Shopify your extension will be injected,
+# and the file that contains your extension’s source code. Learn more:
+# https://shopify.dev/docs/api/checkout-ui-extensions/latest/extension-targets-overview
+
+[[extensions.targeting]]
+module = "./src/Checkout.jsx"
+target = "purchase.checkout.block.render"
+
+[extensions.capabilities]
+# Gives your extension access to directly query Shopify’s storefront API.
+# https://shopify.dev/docs/api/checkout-ui-extensions/latest/configuration#api-access
+api_access = true
+
+# Gives your extension access to make external network calls, using the
+# JavaScript `fetch()` API. Learn more:
+# https://shopify.dev/docs/api/checkout-ui-extensions/latest/configuration#network-access
+# network_access = true
+
+# Loads metafields on checkout resources, including the cart,
+# products, customers, and more. Learn more:
+# https://shopify.dev/docs/api/checkout-ui-extensions/latest/configuration#metafields
+
+# [[extensions.metafields]]
+# namespace = "my_namespace"
+# key = "my_key"
+# [[extensions.metafields]]
+# namespace = "my_namespace"
+# key = "my_other_key"
+
+# Defines settings that will be collected from merchants installing
+# your extension. Learn more:
+# https://shopify.dev/docs/api/checkout-ui-extensions/latest/configuration#settings-definition
+
+[extensions.settings]
+[[extensions.settings.fields]]
+key = "checkbox_text"
+type = "multi_line_text_field"
+name = "Checkbox Text"
+description = "Enter the text to display next to the checkbox (supports long text)."
+
+[[extensions.settings.fields]]
+key = "checkbox_required"
+type = "boolean"
+name = "Required"
+description = "Check this box if the checkbox must be checked before checkout can proceed."
+
+[[extensions.settings.fields]]
+key = "checkbox_required_message"
+type = "single_line_text_field"
+name = "Required Error Message"
+description = "Enter the error message to display when the checkbox is required but unchecked (e.g., 'This field is required.')."
+
+[[extensions.settings.fields]]
+key = "checkbox_checked_by_default"
+type = "boolean"
+name = "Checked by Default"
+description = "Check this box if the checkbox should be checked by default when the page loads."
