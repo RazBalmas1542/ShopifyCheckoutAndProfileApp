@@ -1,0 +1,18 @@
+api_version = "2025-07"
+
+[[extensions]]
+name = "t:name"
+handle = "checkout-location-admin-validation"
+type = "function"
+uid = "1cf131a1-907b-ce80-3cae-46cda345443119211926"
+description = "t:description"
+
+  [[extensions.targeting]]
+  target = "cart.validations.generate.run"
+  input_query = "src/cart_validations_generate_run.graphql"
+  export = "cart_validations_generate_run"
+
+  [extensions.build]
+  command = "cargo build --target=wasm32-unknown-unknown --release"
+  path = "target/wasm32-unknown-unknown/release/checkout-location-admin-validation.wasm"
+  watch = ["src/**/*.rs"]
