@@ -1,8 +1,8 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "d4af36974f737cf59ae4d2209520d52f"
+client_id = "7e6ba7504b82ef19ddcdbc3b3053e964"
 name = "Checkout Custom Extention"
-application_url = "https://shopifycheckoutandprofileapp.fly.dev"
+application_url = "https://shopify.dev/apps/default-app-home"
 embedded = true
 
 [build]
@@ -16,4 +16,4 @@ api_version = "2026-04"
 scopes = ""
 
 [auth]
-redirect_urls = [ "https://shopifycheckoutandprofileapp.fly.dev/api/auth" ]
+redirect_urls = [ "https://shopify.dev/apps/default-app-home/api/auth" ]

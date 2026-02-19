@@ -1,0 +1,20 @@
+query Input {
+  buyerJourney {
+    step
+  }
+  cart {
+    lines {
+      quantity
+    }
+    # Get the customer's email from buyer identity
+    buyerIdentity {
+      email
+    }
+    # Query the admin_emails cart attribute
+    # Cart attributes store key-value pairs, admin_emails contains comma-separated email addresses
+    adminEmails: attribute(key: "admin_emails") {
+      key
+      value
+    }
+  }
+}
