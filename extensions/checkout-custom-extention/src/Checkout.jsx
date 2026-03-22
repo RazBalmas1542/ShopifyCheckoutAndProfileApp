@@ -321,13 +321,16 @@ function Extension() {
     return shouldShow;
   }
 
-  // 2. Check instructions for feature availability, see https://shopify.dev/docs/api/checkout-ui-extensions/apis/cart-instructions for details
-  if (!shopify.instructions.value.attributes.canUpdateAttributes) {
-    // For checkouts such as draft order invoices, cart attributes may not be allowed
-    // Consider rendering a fallback UI or nothing at all, if the feature is unavailable
+  // 2. Check instructions for feature availability
+  // Some checkout surfaces may not expose cart attribute updates (or may not provide instructions at all).
+  // We only show the warning banner if we can definitively tell that updates are not allowed.
+  const canUpdateAttributes = shopify?.instructions?.value?.attributes?.canUpdateAttributes;
+  if (canUpdateAttributes === false) {
     return (
       <s-banner heading="Checkout Custom Extention" tone="warning">
-        {shopify.i18n.translate("attributeChangesAreNotSupported")}
+        {shopify.i18n?.translate
+          ? shopify.i18n.translate("attributeChangesAreNotSupported")
+          : "Attribute changes are not supported on this checkout surface."}
       </s-banner>
     );
   }
@@ -380,6 +383,21 @@ function Extension() {
       if (configuredMetaObjectHandles.length > 0) {
         // Normalize handles for case-insensitive comparison
         const normalizedHandles = configuredMetaObjectHandles.map(h => h.toLowerCase().trim());
+
+        // Sort helper: return the index of the first configured handle that matches this MetaObject
+        // (exact handle match first, but also supports cases where mo.id contains the handle).
+        function getMetaObjectHandleIndex(mo) {
+          const moHandle = mo.handle?.toLowerCase() || "";
+          const moId = (mo.id || "").toLowerCase();
+
+          const idx = normalizedHandles.findIndex((handle) => {
+            if (!handle) return false;
+            return moHandle === handle || moId.includes(handle) || moHandle.includes(handle);
+          });
+
+          // If it doesn't match any configured handle, put it at the end.
+          return idx === -1 ? normalizedHandles.length : idx;
+        }
         
         const filtered = allMetaObjects.filter(mo => {
           const moHandle = mo.handle?.toLowerCase() || "";
@@ -397,7 +415,10 @@ function Extension() {
           setError(`No MetaObjects found with configured handles "${configuredMetaObjectHandles.join('", "')}". Available handles: ${availableHandles.length > 0 ? availableHandles.join(', ') : 'None'}`);
           setMetaObjects([]);
         } else {
-          setMetaObjects(filtered);
+          // Ensure display order matches the order of handles from settings.
+          // This is important because Storefront API ordering is not guaranteed.
+          const sorted = filtered.slice().sort((a, b) => getMetaObjectHandleIndex(a) - getMetaObjectHandleIndex(b));
+          setMetaObjects(sorted);
         }
       } else {
         // Show all MetaObjects if no handles are configured

@@ -6,15 +6,17 @@ query Input {
     lines {
       quantity
     }
-    # Get the customer's email from buyer identity
     buyerIdentity {
-      email
-    }
-    # Query the admin_emails cart attribute
-    # Cart attributes store key-value pairs, admin_emails contains comma-separated email addresses
-    adminEmails: attribute(key: "admin_emails") {
-      key
-      value
+      customer {
+        # Customer metafield used to determine whether the buyer is allowed
+        # to complete checkout.
+        #
+        # If this metafield's value is exactly "admin" (case-insensitive),
+        # then the buyer is treated as an admin.
+        trigger: metafield(namespace: "checkoutblocks", key: "trigger") {
+          value
+        }
+      }
     }
   }
 }
